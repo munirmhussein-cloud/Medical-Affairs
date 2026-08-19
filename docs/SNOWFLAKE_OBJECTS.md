@@ -1,6 +1,6 @@
 # Snowflake Object Registry
 
-These names are reserved for consistency across build rounds. Rounds 5–9 now cover bootstrap, Git integration, physical data materialization, the Cortex Analyst semantic layer, and governed Cortex Search. Round 10 adds the Agent.
+These names are reserved for consistency across build rounds. Rounds 5–10 now cover bootstrap, Git integration, physical data materialization, the Cortex Analyst semantic layer, governed Cortex Search, and the Medical Affairs Cortex Agent.
 
 | Object | Name | Status |
 |---|---|---|
@@ -18,7 +18,7 @@ These names are reserved for consistency across build rounds. Rounds 5–9 now c
 | Git Repository Clone | `MEDICAL_AFFAIRS_GIT_REPO` | Round 6 SQL ready |
 | Semantic View | `CLINICAL_EVIDENCE_SEMANTIC_VIEW` | Round 8 YAML + verify/create/validation SQL ready |
 | Cortex Search Service | `MEDICAL_SCIENTIFIC_SEARCH` | Round 9 create/validation SQL ready |
-| Cortex Agent | `MEDICAL_AFFAIRS_AGENT` | Reserved for Round 10 |
+| Cortex Agent | `MEDICAL_AFFAIRS_AGENT` | Round 10 create/validation SQL ready |
 
 ## Git source-of-truth layer
 
@@ -71,7 +71,18 @@ The model includes Medical Affairs synonyms, business descriptions, aggregate me
 
 The source query also exposes `document_id`, title, citation label, dates, source type, therapeutic-area metadata, and the full synthetic document text as returnable columns. A text primary key on `document_id` is configured for stable document identity and efficient refresh behavior.
 
-Round 9 grants `SNOWFLAKE.CORTEX_EMBED_USER` to `MEDICAL_AFFAIRS_DEMO_ROLE` for managed Cortex Search embeddings. The intentionally staged `DOC-NOVA-220-DRAFT` remains indexed; standard Medical Affairs retrieval must dynamically filter `approval_status = APPROVED` rather than assuming semantic relevance implies governance approval.
+Round 9 grants `SNOWFLAKE.CORTEX_EMBED_USER` to `MEDICAL_AFFAIRS_DEMO_ROLE` for managed Cortex Search embeddings. The intentionally staged `DOC-NOVA-220-DRAFT` remains indexed for direct Search-layer governance testing.
+
+## Round 10 Cortex Agent
+
+`MEDICAL_AFFAIRS_AGENT` combines:
+
+- `medical_scientific_search` → `MEDICAL_SCIENTIFIC_SEARCH`
+- `clinical_evidence_analyst` → `CLINICAL_EVIDENCE_SEMANTIC_VIEW`
+
+The Agent's Search tool resource is hard-filtered to `approval_status = APPROVED`, so DRAFT/EXPIRED documents cannot enter the normal Medical Affairs synthesis path. The orchestration policy sends narrative/source questions to Search, structured quantitative questions to Analyst, and mixed evidence questions to both tools.
+
+Round 10 grants `SNOWFLAKE.CORTEX_AGENT_USER` to `MEDICAL_AFFAIRS_DEMO_ROLE` and includes synchronous `SNOWFLAKE.CORTEX.DATA_AGENT_RUN` validation for Search-oriented, Analyst-oriented, combined hero, and NOVA-220 governance-boundary prompts.
 
 ## Execution references
 
@@ -80,3 +91,4 @@ Round 9 grants `SNOWFLAKE.CORTEX_EMBED_USER` to `MEDICAL_AFFAIRS_DEMO_ROLE` for 
 - Data loading: `snowflake/load/README.md`
 - Semantic layer: `snowflake/semantic/README.md`
 - Cortex Search: `snowflake/search/README.md`
+- Cortex Agent: `snowflake/agent/README.md`
