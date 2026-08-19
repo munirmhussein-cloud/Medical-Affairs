@@ -1,0 +1,5 @@
+indication_id,product_id,indication_name,disease_area,approval_status,region
+IND-001,PRD-001,Moderate-to-Severe Immune-Mediated Colitis,Inflammatory Bowel Disease,APPROVED_SYNTHETIC,US
+IND-002,PRD-001,Refractory Inflammatory Arthritis,Inflammatory Arthritis,INVESTIGATIONAL_SYNTHETIC,US
+IND-003,PRD-002,Moderate-to-Severe Immune-Mediated Colitis,Inflammatory Bowel Disease,INVESTIGATIONAL_SYNTHETIC,US
+IND-004,PRD-003,Advanced Biomarker-Defined Solid Tumor,Solid Tumor,INVESTIGATIONAL_SYNTHETIC,US
