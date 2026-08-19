@@ -1,0 +1,4 @@
+product_id,product_name,therapeutic_area_id,mechanism_summary,lifecycle_status
+PRD-001,Aurelimab,TA-IMM,"Synthetic selective cytokine-pathway monoclonal antibody used only for this demo.",MARKETED_SYNTHETIC
+PRD-002,Neravilimab,TA-IMM,"Synthetic oral small-molecule immune-pathway modulator used only for future comparative demo scenarios.",PIPELINE_SYNTHETIC
+PRD-003,Oncelyra,TA-ONC,"Synthetic targeted oncology therapy reserved for later expansion scenarios.",PIPELINE_SYNTHETIC
