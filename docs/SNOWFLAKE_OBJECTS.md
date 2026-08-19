@@ -1,6 +1,6 @@
 # Snowflake Object Registry
 
-These names are reserved for consistency across build rounds. Round 5 implements bootstrap objects, Round 6 Git integration, and Round 7 physical data materialization. Later rounds implement the semantic, Search, and Agent objects.
+These names are reserved for consistency across build rounds. Rounds 5–8 now cover bootstrap, Git integration, physical data materialization, and the Cortex Analyst semantic layer. Later rounds implement Cortex Search and the Agent.
 
 | Object | Name | Status |
 |---|---|---|
@@ -16,8 +16,8 @@ These names are reserved for consistency across build rounds. Round 5 implements
 | Metadata Stage | `METADATA_STAGE` | Round 5 bootstrap SQL ready; populated by Round 7 |
 | Git API Integration | `MEDICAL_AFFAIRS_GIT_API_INTEGRATION` | Round 6 SQL ready |
 | Git Repository Clone | `MEDICAL_AFFAIRS_GIT_REPO` | Round 6 SQL ready |
+| Semantic View | `CLINICAL_EVIDENCE_SEMANTIC_VIEW` | Round 8 YAML + verify/create/validation SQL ready |
 | Cortex Search Service | `MEDICAL_SCIENTIFIC_SEARCH` | Reserved for Round 9 |
-| Semantic View | `CLINICAL_EVIDENCE_SEMANTIC_VIEW` | Reserved for Round 8 |
 | Cortex Agent | `MEDICAL_AFFAIRS_AGENT` | Reserved for Round 10 |
 
 ## Git source-of-truth layer
@@ -46,10 +46,21 @@ The following native tables are created by `snowflake/load/00_create_physical_ta
 - `SCIENTIFIC_DOCUMENT_LINE`
 - `SCIENTIFIC_DOCUMENT`
 
-`SCIENTIFIC_DOCUMENT_LINE` is an ingestion helper table. `SCIENTIFIC_DOCUMENT` is the final governed unstructured corpus intended for later Cortex Search configuration.
+`SCIENTIFIC_DOCUMENT_LINE` is an ingestion helper table. `SCIENTIFIC_DOCUMENT` is the final governed unstructured corpus intended for Round 9 Cortex Search.
+
+## Round 8 semantic layer
+
+`CLINICAL_EVIDENCE_SEMANTIC_VIEW` is authored in `snowflake/semantic/clinical_evidence_semantic_view.yaml` and created with Snowflake's semantic-view system procedure. It exposes three focused logical domains:
+
+- `study_overview`
+- `efficacy_evidence`
+- `safety_evidence`
+
+The model includes Medical Affairs synonyms, business descriptions, aggregate metrics, verified questions, and Analyst-specific instructions. `SNOWFLAKE.CORTEX_ANALYST_USER` is granted to `MEDICAL_AFFAIRS_DEMO_ROLE` in the Round 8 privilege script.
 
 ## Execution references
 
 - Bootstrap: `snowflake/setup/README.md`
 - Git integration: `snowflake/git/README.md`
 - Data loading: `snowflake/load/README.md`
+- Semantic layer: `snowflake/semantic/README.md`
