@@ -1,6 +1,6 @@
 # Snowflake Object Registry
 
-These names are reserved for consistency across build rounds. Rounds 5–8 now cover bootstrap, Git integration, physical data materialization, and the Cortex Analyst semantic layer. Later rounds implement Cortex Search and the Agent.
+These names are reserved for consistency across build rounds. Rounds 5–9 now cover bootstrap, Git integration, physical data materialization, the Cortex Analyst semantic layer, and governed Cortex Search. Round 10 adds the Agent.
 
 | Object | Name | Status |
 |---|---|---|
@@ -17,7 +17,7 @@ These names are reserved for consistency across build rounds. Rounds 5–8 now c
 | Git API Integration | `MEDICAL_AFFAIRS_GIT_API_INTEGRATION` | Round 6 SQL ready |
 | Git Repository Clone | `MEDICAL_AFFAIRS_GIT_REPO` | Round 6 SQL ready |
 | Semantic View | `CLINICAL_EVIDENCE_SEMANTIC_VIEW` | Round 8 YAML + verify/create/validation SQL ready |
-| Cortex Search Service | `MEDICAL_SCIENTIFIC_SEARCH` | Reserved for Round 9 |
+| Cortex Search Service | `MEDICAL_SCIENTIFIC_SEARCH` | Round 9 create/validation SQL ready |
 | Cortex Agent | `MEDICAL_AFFAIRS_AGENT` | Reserved for Round 10 |
 
 ## Git source-of-truth layer
@@ -46,7 +46,7 @@ The following native tables are created by `snowflake/load/00_create_physical_ta
 - `SCIENTIFIC_DOCUMENT_LINE`
 - `SCIENTIFIC_DOCUMENT`
 
-`SCIENTIFIC_DOCUMENT_LINE` is an ingestion helper table. `SCIENTIFIC_DOCUMENT` is the final governed unstructured corpus intended for Round 9 Cortex Search.
+`SCIENTIFIC_DOCUMENT_LINE` is an ingestion helper table. `SCIENTIFIC_DOCUMENT` is the final governed unstructured corpus used by Round 9 Cortex Search.
 
 ## Round 8 semantic layer
 
@@ -58,9 +58,25 @@ The following native tables are created by `snowflake/load/00_create_physical_ta
 
 The model includes Medical Affairs synonyms, business descriptions, aggregate metrics, verified questions, and Analyst-specific instructions. `SNOWFLAKE.CORTEX_ANALYST_USER` is granted to `MEDICAL_AFFAIRS_DEMO_ROLE` in the Round 8 privilege script.
 
+## Round 9 governed Search layer
+
+`MEDICAL_SCIENTIFIC_SEARCH` is created over `SCIENTIFIC_DOCUMENT` with `content` as the searchable text and these filterable attributes:
+
+- `approval_status`
+- `document_type`
+- `study_id`
+- `product_id`
+- `indication_id`
+- `region`
+
+The source query also exposes `document_id`, title, citation label, dates, source type, therapeutic-area metadata, and the full synthetic document text as returnable columns. A text primary key on `document_id` is configured for stable document identity and efficient refresh behavior.
+
+Round 9 grants `SNOWFLAKE.CORTEX_EMBED_USER` to `MEDICAL_AFFAIRS_DEMO_ROLE` for managed Cortex Search embeddings. The intentionally staged `DOC-NOVA-220-DRAFT` remains indexed; standard Medical Affairs retrieval must dynamically filter `approval_status = APPROVED` rather than assuming semantic relevance implies governance approval.
+
 ## Execution references
 
 - Bootstrap: `snowflake/setup/README.md`
 - Git integration: `snowflake/git/README.md`
 - Data loading: `snowflake/load/README.md`
 - Semantic layer: `snowflake/semantic/README.md`
+- Cortex Search: `snowflake/search/README.md`
