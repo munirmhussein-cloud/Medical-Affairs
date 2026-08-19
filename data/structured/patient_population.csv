@@ -1,0 +1,12 @@
+population_id,study_id,population_name,population_description,n_patients,biomarker_status,prior_therapy_status
+POP-301-ALL,ST-301,All Randomized Patients,"All randomized participants in the synthetic induction study.",600,,MIXED
+POP-301-NAIVE,ST-301,Biologic-Naive,"Participants with no prior biologic therapy exposure.",300,,BIOLOGIC_NAIVE
+POP-301-EXP,ST-301,Biologic-Experienced,"Participants with prior biologic therapy exposure.",300,,BIOLOGIC_EXPERIENCED
+POP-302-ALL,ST-302,All Randomized Patients,"All randomized participants in the second synthetic induction study.",720,,MIXED
+POP-302-BIOPOS,ST-302,Biomarker-Positive,"Synthetic biomarker-positive subgroup selected prospectively.",250,POSITIVE,MIXED
+POP-302-BIONEG,ST-302,Biomarker-Negative,"Synthetic biomarker-negative subgroup selected prospectively.",470,NEGATIVE,MIXED
+POP-303-ALL,ST-303,Maintenance Responders,"Participants entering maintenance after induction response.",480,,MIXED
+POP-303-NAIVE,ST-303,Biologic-Naive Maintenance Responders,"Maintenance responders with no prior biologic exposure.",220,,BIOLOGIC_NAIVE
+POP-303-EXP,ST-303,Biologic-Experienced Maintenance Responders,"Maintenance responders with prior biologic exposure.",260,,BIOLOGIC_EXPERIENCED
+POP-210-ALL,ST-210,All Randomized Patients,"All randomized participants in the synthetic Phase II arthritis study.",240,,MIXED
+POP-220-ALL,ST-220,All Randomized Patients,"All randomized participants in the synthetic Phase II Neravilimab study.",300,,MIXED
