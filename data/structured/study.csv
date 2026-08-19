@@ -1,0 +1,6 @@
+study_id,study_name,product_id,indication_id,phase,study_design,comparator,n_patients,primary_endpoint_name,study_status,start_date,completion_date,publication_date,evidence_tier
+ST-301,AURORA-301,PRD-001,IND-001,Phase III,"Randomized double-blind placebo-controlled induction study",Placebo,600,Clinical Response at Week 12,COMPLETED_SYNTHETIC,2023-01-15,2024-02-20,2024-06-15,TIER_1_SYNTHETIC
+ST-302,AURORA-302,PRD-001,IND-001,Phase III,"Randomized double-blind placebo-controlled induction study",Placebo,720,Clinical Response at Week 12,COMPLETED_SYNTHETIC,2023-03-01,2024-05-18,2024-09-20,TIER_1_SYNTHETIC
+ST-303,AURORA-303,PRD-001,IND-001,Phase III,"Randomized double-blind placebo-controlled maintenance study",Placebo,480,Clinical Remission at Week 52,COMPLETED_SYNTHETIC,2023-08-10,2025-01-25,2025-05-10,TIER_1_SYNTHETIC
+ST-210,AURORA-210,PRD-001,IND-002,Phase II,"Randomized dose-ranging proof-of-concept study",Placebo,240,ACR50-like Composite Response at Week 16,COMPLETED_SYNTHETIC,2024-01-12,2025-02-14,2025-07-01,TIER_2_SYNTHETIC
+ST-220,NOVA-220,PRD-002,IND-003,Phase II,"Randomized active-development comparator study",Placebo,300,Clinical Response at Week 12,ONGOING_SYNTHETIC,2025-02-01,,,TIER_2_SYNTHETIC
