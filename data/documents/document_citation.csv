@@ -1,0 +1,11 @@
+citation_id,document_id,citation_order,citation_text,source_reference,public_source_flag
+CIT-ST301-001,DOC-ST301-CSR,1,"AURORA-301 overall Week 12 Clinical Response: 64.0% Aurelimab vs 38.0% placebo.",EP-301-001,false
+CIT-ST301-002,DOC-ST301-CSR,2,"AURORA-301 biologic-naive subgroup: 72.0% vs 42.0%, a 30.0-point difference.",EP-301-002,false
+CIT-ST302-001,DOC-ST302-CSR,1,"AURORA-302 overall Week 12 Clinical Response: 68.0% vs 41.0%.",EP-302-001,false
+CIT-ST302-002,DOC-ST302-CSR,2,"AURORA-302 biomarker-positive subgroup: 78.0% vs 43.0%, a 35.0-point difference.",EP-302-002,false
+CIT-ST303-001,DOC-ST303-CSR,1,"AURORA-303 Week 52 Clinical Remission: 49.0% vs 25.0%.",EP-303-001,false
+CIT-ST303-002,DOC-ST303-CSR,2,"AURORA-303 biologic-naive responders: 56.0% vs 27.0%, a 29.0-point difference.",EP-303-002,false
+CIT-ST210-001,DOC-ST210-CSR,1,"AURORA-210 high-dose response: 58.0% vs 24.0% placebo.",EP-210-001,false
+CIT-ST210-002,DOC-ST210-CSR,2,"AURORA-210 low-dose response: 44.0% vs 24.0% placebo.",EP-210-002,false
+CIT-MIR-001,DOC-AUR-MIR-EFF,1,"Approved synthetic efficacy response draws only from approved AURORA Phase III evidence.",DOC-ST301-CSR,false
+CIT-MIR-002,DOC-AUR-MIR-EFF,2,"Approved synthetic efficacy response includes AURORA-302 as the largest staged subgroup difference.",DOC-ST302-CSR,false
