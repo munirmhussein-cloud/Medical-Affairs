@@ -1,0 +1,3 @@
+therapeutic_area_id,therapeutic_area_name,description
+TA-IMM,Immunology,"Synthetic therapeutic area for inflammatory disease demo scenarios."
+TA-ONC,Oncology,"Synthetic therapeutic area reserved for future expansion scenarios."
