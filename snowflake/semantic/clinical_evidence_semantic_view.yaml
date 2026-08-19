@@ -1,0 +1,387 @@
+name: CLINICAL_EVIDENCE_SEMANTIC_VIEW
+description: >
+  Medical Affairs semantic view for the synthetic Aurelimab clinical evidence program.
+  It translates the native study, efficacy, safety, population, treatment-arm, product,
+  and indication tables into terminology used by Medical Affairs professionals.
+
+module_custom_instructions:
+  sql_generation: |
+    Treat all data as synthetic demonstration evidence. Round percentages and percentage-point
+    differences to one decimal place unless the user asks otherwise. When a user asks which
+    population or subgroup showed the strongest response, rank by delta_vs_comparator rather
+    than by active-arm response rate alone. Distinguish induction Week 12 outcomes from
+    maintenance Week 52 outcomes. Do not infer efficacy for studies with no efficacy endpoint
+    rows. Describe subgroup comparisons as descriptive synthetic evidence, not treatment advice.
+  question_categorization: |
+    This semantic view is intended for aggregate clinical study, efficacy, population, and safety
+    questions. Do not answer patient-level diagnosis or treatment-selection questions. If a user
+    asks for results from an ongoing study that has no efficacy rows, state that no staged efficacy
+    evidence is available rather than extrapolating from another study.
+
+tables:
+  - name: study_overview
+    synonyms: [studies, clinical studies, trials, clinical trials, development program]
+    description: One row per synthetic clinical study with program, indication, enrollment, phase, design, status, and timing.
+    base_table:
+      database: MEDICAL_AFFAIRS_AI
+      schema: MEDICAL_AFFAIRS
+      table: STUDY
+    primary_key:
+      columns: [study_id]
+    dimensions:
+      - name: study_id
+        synonyms: [study identifier, trial id]
+        description: Unique synthetic study identifier.
+        expr: study_id
+        data_type: VARCHAR
+      - name: study_name
+        synonyms: [trial name, study]
+        description: Business-facing study name such as AURORA-301.
+        expr: study_name
+        data_type: VARCHAR
+      - name: phase
+        synonyms: [clinical phase, development phase]
+        description: Clinical development phase.
+        expr: phase
+        data_type: VARCHAR
+      - name: study_design
+        synonyms: [trial design, design]
+        description: High-level study design.
+        expr: study_design
+        data_type: VARCHAR
+      - name: comparator
+        synonyms: [control, comparison arm]
+        description: Named study comparator.
+        expr: comparator
+        data_type: VARCHAR
+      - name: primary_endpoint
+        synonyms: [primary outcome, main endpoint]
+        description: Primary endpoint defined for the study.
+        expr: primary_endpoint_name
+        data_type: VARCHAR
+      - name: study_status
+        synonyms: [trial status, development status]
+        description: Synthetic completion or ongoing status.
+        expr: study_status
+        data_type: VARCHAR
+      - name: evidence_tier
+        synonyms: [evidence level, evidence tier]
+        description: Synthetic evidence-tier label used in the demo.
+        expr: evidence_tier
+        data_type: VARCHAR
+    time_dimensions:
+      - name: start_date
+        synonyms: [study start, trial start]
+        description: Synthetic study start date.
+        expr: start_date
+        data_type: DATE
+      - name: completion_date
+        synonyms: [study completion, trial completion]
+        description: Synthetic study completion date when available.
+        expr: completion_date
+        data_type: DATE
+      - name: publication_date
+        synonyms: [publication date, evidence date]
+        description: Synthetic publication date when available.
+        expr: publication_date
+        data_type: DATE
+    facts:
+      - name: enrolled_patients
+        synonyms: [enrollment, patients enrolled, participants]
+        description: Total randomized/enrolled participants in the synthetic study.
+        expr: n_patients
+        data_type: NUMBER
+    metrics:
+      - name: total_enrollment
+        synonyms: [total patients, total participants]
+        description: Sum of study enrollment over the selected studies.
+        expr: SUM(n_patients)
+      - name: study_count
+        synonyms: [number of studies, trial count]
+        description: Number of studies in the selected scope.
+        expr: COUNT(study_id)
+
+  - name: efficacy_evidence
+    synonyms: [efficacy results, clinical efficacy, outcomes, endpoint results, response data]
+    description: >
+      Flattened Medical Affairs evidence grain: one row per staged efficacy endpoint result,
+      enriched with study, treatment arm, patient population, product, and indication context.
+    definition: |
+      SELECT
+        e.endpoint_id,
+        e.study_id,
+        s.study_name,
+        s.phase,
+        s.study_status,
+        s.evidence_tier,
+        s.publication_date,
+        p.product_name,
+        i.indication_name,
+        a.treatment_arm_id,
+        a.arm_name,
+        a.treatment_type,
+        pop.population_id,
+        pop.population_name,
+        pop.population_description,
+        pop.biomarker_status,
+        pop.prior_therapy_status,
+        e.endpoint_name,
+        e.endpoint_type,
+        e.timepoint,
+        e.result_value,
+        e.result_unit,
+        e.comparator_value,
+        e.delta_vs_comparator,
+        e.p_value,
+        e.confidence_interval,
+        e.source_document_id
+      FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.EFFICACY_ENDPOINT e
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON e.study_id = s.study_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON e.treatment_arm_id = a.treatment_arm_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PATIENT_POPULATION pop ON e.population_id = pop.population_id
+    primary_key:
+      columns: [endpoint_id]
+    dimensions:
+      - name: endpoint_id
+        synonyms: [result id, endpoint result id]
+        description: Unique efficacy evidence-row identifier.
+        expr: endpoint_id
+        data_type: VARCHAR
+      - name: study_name
+        synonyms: [trial, study]
+        description: Study associated with the efficacy result.
+        expr: study_name
+        data_type: VARCHAR
+      - name: phase
+        synonyms: [clinical phase]
+        description: Clinical development phase.
+        expr: phase
+        data_type: VARCHAR
+      - name: study_status
+        synonyms: [trial status]
+        description: Completion/development status for the source study.
+        expr: study_status
+        data_type: VARCHAR
+      - name: product
+        synonyms: [therapy, treatment, asset]
+        description: Synthetic product name.
+        expr: product_name
+        data_type: VARCHAR
+      - name: indication
+        synonyms: [disease, condition, disease area]
+        description: Synthetic indication evaluated in the study.
+        expr: indication_name
+        data_type: VARCHAR
+      - name: treatment_arm
+        synonyms: [arm, active arm, regimen]
+        description: Treatment arm associated with the result.
+        expr: arm_name
+        data_type: VARCHAR
+      - name: patient_population
+        synonyms: [population, subgroup, patient subgroup, cohort]
+        description: Population or subgroup for the endpoint result.
+        expr: population_name
+        data_type: VARCHAR
+      - name: biomarker_status
+        synonyms: [biomarker, biomarker subgroup]
+        description: Synthetic biomarker status where applicable.
+        expr: biomarker_status
+        data_type: VARCHAR
+      - name: prior_therapy_status
+        synonyms: [prior biologic status, treatment history, biologic experience]
+        description: Synthetic prior-therapy category where applicable.
+        expr: prior_therapy_status
+        data_type: VARCHAR
+      - name: endpoint
+        synonyms: [outcome, clinical endpoint, efficacy endpoint]
+        description: Named efficacy endpoint.
+        expr: endpoint_name
+        data_type: VARCHAR
+      - name: endpoint_type
+        synonyms: [primary endpoint, secondary endpoint, subgroup result]
+        description: PRIMARY, SECONDARY, or SUBGROUP classification.
+        expr: endpoint_type
+        data_type: VARCHAR
+      - name: timepoint
+        synonyms: [week, assessment time, endpoint time]
+        description: Assessment timepoint such as Week 12 or Week 52.
+        expr: timepoint
+        data_type: VARCHAR
+      - name: source_document_id
+        synonyms: [evidence source, source document]
+        description: Identifier for the synthetic document grounding the structured result.
+        expr: source_document_id
+        data_type: VARCHAR
+    time_dimensions:
+      - name: publication_date
+        synonyms: [evidence publication date]
+        description: Synthetic publication date for the source study.
+        expr: publication_date
+        data_type: DATE
+    facts:
+      - name: active_response_rate
+        synonyms: [response rate, treatment response, active-arm result, efficacy rate]
+        description: Result percentage for the active treatment arm at this endpoint/population.
+        expr: result_value
+        data_type: NUMBER
+      - name: comparator_response_rate
+        synonyms: [placebo rate, comparator result, control rate]
+        description: Comparator percentage for the same staged endpoint/population.
+        expr: comparator_value
+        data_type: NUMBER
+      - name: treatment_difference_pp
+        synonyms: [treatment difference, percentage-point difference, delta, effect difference]
+        description: Active-arm minus comparator result in percentage points.
+        expr: delta_vs_comparator
+        data_type: NUMBER
+      - name: p_value
+        synonyms: [statistical p value, significance value]
+        description: Synthetic staged p-value where available.
+        expr: p_value
+        data_type: NUMBER
+    metrics:
+      - name: average_active_response_rate
+        synonyms: [average response rate, mean active response]
+        description: Average active-arm result percentage across selected endpoint rows.
+        expr: AVG(result_value)
+      - name: average_treatment_difference_pp
+        synonyms: [average treatment difference, mean delta]
+        description: Average percentage-point difference versus comparator across selected endpoint rows.
+        expr: AVG(delta_vs_comparator)
+      - name: largest_treatment_difference_pp
+        synonyms: [largest response difference, strongest subgroup difference, biggest delta]
+        description: Largest staged active-versus-comparator percentage-point difference in the selected evidence.
+        expr: MAX(delta_vs_comparator)
+      - name: efficacy_result_count
+        synonyms: [number of efficacy results, endpoint count]
+        description: Count of staged efficacy endpoint rows.
+        expr: COUNT(endpoint_id)
+
+  - name: safety_evidence
+    synonyms: [safety results, adverse events, tolerability, safety profile]
+    description: Flattened aggregate safety evidence by study and treatment arm. No patient-level data is present.
+    definition: |
+      SELECT
+        se.safety_event_id,
+        se.study_id,
+        s.study_name,
+        s.phase,
+        p.product_name,
+        i.indication_name,
+        se.treatment_arm_id,
+        a.arm_name,
+        a.treatment_type,
+        se.event_category,
+        se.event_term,
+        se.event_rate,
+        se.serious_event_flag,
+        se.source_document_id
+      FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.SAFETY_EVENT se
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON se.study_id = s.study_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
+      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON se.treatment_arm_id = a.treatment_arm_id
+    primary_key:
+      columns: [safety_event_id]
+    dimensions:
+      - name: safety_event_id
+        expr: safety_event_id
+        data_type: VARCHAR
+      - name: study_name
+        synonyms: [trial, study]
+        description: Study associated with the safety observation.
+        expr: study_name
+        data_type: VARCHAR
+      - name: phase
+        synonyms: [clinical phase]
+        expr: phase
+        data_type: VARCHAR
+      - name: product
+        synonyms: [therapy, treatment, asset]
+        expr: product_name
+        data_type: VARCHAR
+      - name: indication
+        synonyms: [disease, condition]
+        expr: indication_name
+        data_type: VARCHAR
+      - name: treatment_arm
+        synonyms: [arm, regimen]
+        expr: arm_name
+        data_type: VARCHAR
+      - name: event_category
+        synonyms: [adverse event category, safety category]
+        expr: event_category
+        data_type: VARCHAR
+      - name: adverse_event
+        synonyms: [event, safety event, adverse event term]
+        expr: event_term
+        data_type: VARCHAR
+      - name: serious_event
+        synonyms: [serious adverse event, SAE]
+        description: Boolean indicating a staged serious adverse event category.
+        expr: serious_event_flag
+        data_type: BOOLEAN
+      - name: source_document_id
+        synonyms: [evidence source, source document]
+        expr: source_document_id
+        data_type: VARCHAR
+    facts:
+      - name: adverse_event_rate
+        synonyms: [event rate, safety rate, AE rate]
+        description: Aggregate staged percentage for the specified safety event and arm.
+        expr: event_rate
+        data_type: NUMBER
+    metrics:
+      - name: average_adverse_event_rate
+        synonyms: [average event rate, mean AE rate]
+        description: Average staged event percentage for selected safety rows.
+        expr: AVG(event_rate)
+      - name: safety_observation_count
+        synonyms: [safety result count, number of safety observations]
+        expr: COUNT(safety_event_id)
+
+verified_queries:
+  - name: strongest_phase_iii_subgroup
+    question: Which Phase III patient subgroup showed the largest treatment difference versus comparator?
+    verified_by: Medical Affairs Demo Build
+    use_as_onboarding_question: true
+    sql: |
+      SELECT study_name, patient_population, endpoint, timepoint,
+             active_response_rate, comparator_response_rate, treatment_difference_pp
+      FROM efficacy_evidence
+      WHERE phase = 'Phase III' AND endpoint_type = 'SUBGROUP'
+      ORDER BY treatment_difference_pp DESC
+      LIMIT 1
+
+  - name: compare_phase_iii_primary_efficacy
+    question: Compare the primary Phase III efficacy results across the AURORA program.
+    verified_by: Medical Affairs Demo Build
+    use_as_onboarding_question: true
+    sql: |
+      SELECT study_name, patient_population, endpoint, timepoint,
+             active_response_rate, comparator_response_rate, treatment_difference_pp
+      FROM efficacy_evidence
+      WHERE phase = 'Phase III' AND endpoint_type = 'PRIMARY'
+      ORDER BY study_name
+
+  - name: serious_event_rates_by_arm
+    question: How did serious adverse event rates compare between active treatment and placebo in the Phase III studies?
+    verified_by: Medical Affairs Demo Build
+    use_as_onboarding_question: true
+    sql: |
+      SELECT study_name, treatment_arm, adverse_event, adverse_event_rate
+      FROM safety_evidence
+      WHERE phase = 'Phase III' AND serious_event = TRUE
+      ORDER BY study_name, treatment_arm
+
+  - name: ongoing_study_efficacy_boundary
+    question: What efficacy evidence is available for NOVA-220?
+    verified_by: Medical Affairs Demo Build
+    use_as_onboarding_question: true
+    sql: |
+      SELECT study_name, efficacy_result_count
+      FROM efficacy_evidence
+      WHERE study_name = 'NOVA-220'
+      GROUP BY study_name
