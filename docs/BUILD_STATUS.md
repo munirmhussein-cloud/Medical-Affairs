@@ -10,7 +10,7 @@
 | 6 | Git Integration | COMPLETE | API integration, Git repository clone, fetch, branch/path inspection, and validation SQL created | Public GitHub repository uses no-auth Git integration |
 | 7 | Data Loading | COMPLETE | Physical table DDL, Git-to-stage COPY FILES, structured/metadata COPY INTO, Markdown reconstruction, and business-evidence validation SQL created | SQL is source-controlled; target Snowflake account execution remains an environment step |
 | 8 | Semantic Layer | COMPLETE | Business-language semantic-view YAML, Analyst-specific privileges, verify/create scripts, semantic SQL validation, synonyms, metrics, custom instructions, and verified queries created | `CLINICAL_EVIDENCE_SEMANTIC_VIEW` is source-controlled; execution in target Snowflake account remains an environment step |
-| 9 | Cortex Search | NOT STARTED | | |
+| 9 | Cortex Search | COMPLETE | Search privilege script, governed Search-service definition, service/index validation, approved-only retrieval tests, draft-governance contrast, and business-facing demo queries created | `MEDICAL_SCIENTIFIC_SEARCH` indexes both approved and draft synthetic evidence; approval is enforced dynamically through search attributes/filters |
 | 10 | Cortex Agent | NOT STARTED | | |
 | 11 | AI / Model Routing | NOT STARTED | | |
 | 12 | Validation | NOT STARTED | | |
@@ -18,4 +18,4 @@
 
 ## Current handoff
 
-Proceed to **Round 9 — Cortex Search**. Round 8 now provides `snowflake/semantic/` with `CLINICAL_EVIDENCE_SEMANTIC_VIEW`, authored in Medical Affairs terminology over the native Round 7 tables. The view exposes focused study-overview, efficacy-evidence, and safety-evidence logical tables; includes synonyms, metrics, Analyst custom instructions, and verified questions; and preserves the staged evidence boundary for NOVA-220. Round 9 should build `MEDICAL_SCIENTIFIC_SEARCH` over the native `SCIENTIFIC_DOCUMENT` corpus with metadata attributes/filters for approval status, document type, study, product, indication, and region, while keeping the Cortex Agent for Round 10.
+Proceed to **Round 10 — Cortex Agent**. Round 9 now provides `snowflake/search/` with `MEDICAL_SCIENTIFIC_SEARCH` over `SCIENTIFIC_DOCUMENT`, using `content` as the semantic search column and `approval_status`, `document_type`, `study_id`, `product_id`, `indication_id`, and `region` as filterable attributes. The service deliberately indexes DRAFT content so governance can be demonstrated explicitly: standard Medical Affairs retrieval must apply `approval_status = APPROVED`, while controlled internal workflows can request DRAFT evidence intentionally. Round 10 should attach both `MEDICAL_SCIENTIFIC_SEARCH` and `CLINICAL_EVIDENCE_SEMANTIC_VIEW` as Agent tools, define clear tool descriptions and orchestration instructions, preserve the approval filter policy, and support combined structured + unstructured evidence synthesis.
