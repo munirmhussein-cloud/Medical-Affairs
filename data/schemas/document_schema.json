@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "synthetic_demo_only": true,
+  "scientific_document": {
+    "primary_key": ["document_id"],
+    "fields": [
+      ["document_id", "string", true],
+      ["title", "string", true],
+      ["document_type", "string", true],
+      ["therapeutic_area_id", "string", true],
+      ["product_id", "string", false],
+      ["indication_id", "string", false],
+      ["study_id", "string", false],
+      ["publication_date", "date", true],
+      ["effective_date", "date", true],
+      ["expiration_date", "date", false],
+      ["approval_status", "string", true],
+      ["region", "string", true],
+      ["source_type", "string", true],
+      ["citation_label", "string", true],
+      ["content", "string", true],
+      ["synthetic_flag", "boolean", true]
+    ],
+    "document_type_enum": [
+      "STUDY_SUMMARY",
+      "PUBLICATION_ABSTRACT",
+      "PRESCRIBING_INFORMATION_DEMO",
+      "APPROVED_MEDICAL_RESPONSE",
+      "SCIENTIFIC_FAQ",
+      "MEDICAL_AFFAIRS_SOP",
+      "EVIDENCE_SUMMARY"
+    ],
+    "approval_status_enum": ["APPROVED", "DRAFT", "EXPIRED"],
+    "source_type_enum": ["SYNTHETIC_INTERNAL", "SYNTHETIC_PUBLICATION"]
+  },
+  "document_citation": {
+    "primary_key": ["citation_id"],
+    "foreign_keys": {"document_id": "scientific_document.document_id"},
+    "fields": [
+      ["citation_id", "string", true],
+      ["document_id", "string", true],
+      ["citation_order", "integer", true],
+      ["citation_text", "string", true],
+      ["source_reference", "string", false],
+      ["public_source_flag", "boolean", true]
+    ]
+  },
+  "approved_medical_response": {
+    "primary_key": ["response_id"],
+    "foreign_keys": {"document_id": "scientific_document.document_id"},
+    "fields": [
+      ["response_id", "string", true],
+      ["document_id", "string", true],
+      ["question_category", "string", true],
+      ["approved_question", "string", true],
+      ["approved_response_summary", "string", true],
+      ["approval_status", "string", true],
+      ["effective_date", "date", true],
+      ["region", "string", true]
+    ]
+  }
+}
