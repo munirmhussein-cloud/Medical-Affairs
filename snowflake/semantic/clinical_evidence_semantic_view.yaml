@@ -106,41 +106,42 @@ tables:
     description: >
       Flattened Medical Affairs evidence grain: one row per staged efficacy endpoint result,
       enriched with study, treatment arm, patient population, product, and indication context.
-    definition: |
-      SELECT
-        e.endpoint_id,
-        e.study_id,
-        s.study_name,
-        s.phase,
-        s.study_status,
-        s.evidence_tier,
-        s.publication_date,
-        p.product_name,
-        i.indication_name,
-        a.treatment_arm_id,
-        a.arm_name,
-        a.treatment_type,
-        pop.population_id,
-        pop.population_name,
-        pop.population_description,
-        pop.biomarker_status,
-        pop.prior_therapy_status,
-        e.endpoint_name,
-        e.endpoint_type,
-        e.timepoint,
-        e.result_value,
-        e.result_unit,
-        e.comparator_value,
-        e.delta_vs_comparator,
-        e.p_value,
-        e.confidence_interval,
-        e.source_document_id
-      FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.EFFICACY_ENDPOINT e
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON e.study_id = s.study_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON e.treatment_arm_id = a.treatment_arm_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PATIENT_POPULATION pop ON e.population_id = pop.population_id
+    base_table:
+      definition: |
+        SELECT
+          e.endpoint_id,
+          e.study_id,
+          s.study_name,
+          s.phase,
+          s.study_status,
+          s.evidence_tier,
+          s.publication_date,
+          p.product_name,
+          i.indication_name,
+          a.treatment_arm_id,
+          a.arm_name,
+          a.treatment_type,
+          pop.population_id,
+          pop.population_name,
+          pop.population_description,
+          pop.biomarker_status,
+          pop.prior_therapy_status,
+          e.endpoint_name,
+          e.endpoint_type,
+          e.timepoint,
+          e.result_value,
+          e.result_unit,
+          e.comparator_value,
+          e.delta_vs_comparator,
+          e.p_value,
+          e.confidence_interval,
+          e.source_document_id
+        FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.EFFICACY_ENDPOINT e
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON e.study_id = s.study_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON e.treatment_arm_id = a.treatment_arm_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PATIENT_POPULATION pop ON e.population_id = pop.population_id
     primary_key:
       columns: [endpoint_id]
     dimensions:
@@ -262,27 +263,28 @@ tables:
   - name: safety_evidence
     synonyms: [safety results, adverse events, tolerability, safety profile]
     description: Flattened aggregate safety evidence by study and treatment arm. No patient-level data is present.
-    definition: |
-      SELECT
-        se.safety_event_id,
-        se.study_id,
-        s.study_name,
-        s.phase,
-        p.product_name,
-        i.indication_name,
-        se.treatment_arm_id,
-        a.arm_name,
-        a.treatment_type,
-        se.event_category,
-        se.event_term,
-        se.event_rate,
-        se.serious_event_flag,
-        se.source_document_id
-      FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.SAFETY_EVENT se
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON se.study_id = s.study_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
-      JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON se.treatment_arm_id = a.treatment_arm_id
+    base_table:
+      definition: |
+        SELECT
+          se.safety_event_id,
+          se.study_id,
+          s.study_name,
+          s.phase,
+          p.product_name,
+          i.indication_name,
+          se.treatment_arm_id,
+          a.arm_name,
+          a.treatment_type,
+          se.event_category,
+          se.event_term,
+          se.event_rate,
+          se.serious_event_flag,
+          se.source_document_id
+        FROM MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.SAFETY_EVENT se
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.STUDY s ON se.study_id = s.study_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.PRODUCT p ON s.product_id = p.product_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.INDICATION i ON s.indication_id = i.indication_id
+        JOIN MEDICAL_AFFAIRS_AI.MEDICAL_AFFAIRS.TREATMENT_ARM a ON se.treatment_arm_id = a.treatment_arm_id
     primary_key:
       columns: [safety_event_id]
     dimensions:
