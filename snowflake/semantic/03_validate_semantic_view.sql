@@ -1,4 +1,6 @@
 -- Round 8: Validate semantic view metadata and core semantic queries.
+-- Filter dimensions are explicitly projected because SEMANTIC_VIEW queries can only
+-- reference dimensions/metrics exposed in the query's DIMENSIONS/METRICS clauses.
 
 USE ROLE MEDICAL_AFFAIRS_DEMO_ROLE;
 USE WAREHOUSE MEDICAL_AFFAIRS_DEMO_WH;
@@ -15,7 +17,9 @@ FROM SEMANTIC_VIEW(
   DIMENSIONS efficacy_evidence.study_name,
              efficacy_evidence.patient_population,
              efficacy_evidence.endpoint,
-             efficacy_evidence.timepoint
+             efficacy_evidence.timepoint,
+             efficacy_evidence.phase,
+             efficacy_evidence.endpoint_type
   METRICS efficacy_evidence.largest_treatment_difference_pp
 )
 WHERE efficacy_evidence.phase = 'Phase III'
@@ -30,7 +34,9 @@ FROM SEMANTIC_VIEW(
   DIMENSIONS efficacy_evidence.study_name,
              efficacy_evidence.patient_population,
              efficacy_evidence.endpoint,
-             efficacy_evidence.timepoint
+             efficacy_evidence.timepoint,
+             efficacy_evidence.phase,
+             efficacy_evidence.endpoint_type
   METRICS efficacy_evidence.average_active_response_rate,
           efficacy_evidence.average_treatment_difference_pp
 )
@@ -44,7 +50,9 @@ FROM SEMANTIC_VIEW(
   CLINICAL_EVIDENCE_SEMANTIC_VIEW
   DIMENSIONS safety_evidence.study_name,
              safety_evidence.treatment_arm,
-             safety_evidence.adverse_event
+             safety_evidence.adverse_event,
+             safety_evidence.phase,
+             safety_evidence.serious_event
   METRICS safety_evidence.average_adverse_event_rate
 )
 WHERE safety_evidence.phase = 'Phase III'
