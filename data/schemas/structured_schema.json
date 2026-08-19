@@ -1,0 +1,128 @@
+{
+  "version": "1.0",
+  "synthetic_demo_only": true,
+  "datasets": {
+    "therapeutic_area": {
+      "primary_key": ["therapeutic_area_id"],
+      "fields": [
+        ["therapeutic_area_id", "string", true],
+        ["therapeutic_area_name", "string", true],
+        ["description", "string", true]
+      ]
+    },
+    "product": {
+      "primary_key": ["product_id"],
+      "foreign_keys": {"therapeutic_area_id": "therapeutic_area.therapeutic_area_id"},
+      "fields": [
+        ["product_id", "string", true],
+        ["product_name", "string", true],
+        ["therapeutic_area_id", "string", true],
+        ["mechanism_summary", "string", true],
+        ["lifecycle_status", "string", true]
+      ]
+    },
+    "indication": {
+      "primary_key": ["indication_id"],
+      "foreign_keys": {"product_id": "product.product_id"},
+      "fields": [
+        ["indication_id", "string", true],
+        ["product_id", "string", true],
+        ["indication_name", "string", true],
+        ["disease_area", "string", true],
+        ["approval_status", "string", true],
+        ["region", "string", true]
+      ]
+    },
+    "study": {
+      "primary_key": ["study_id"],
+      "foreign_keys": {
+        "product_id": "product.product_id",
+        "indication_id": "indication.indication_id"
+      },
+      "fields": [
+        ["study_id", "string", true],
+        ["study_name", "string", true],
+        ["product_id", "string", true],
+        ["indication_id", "string", true],
+        ["phase", "string", true],
+        ["study_design", "string", true],
+        ["comparator", "string", false],
+        ["n_patients", "integer", true],
+        ["primary_endpoint_name", "string", true],
+        ["study_status", "string", true],
+        ["start_date", "date", true],
+        ["completion_date", "date", false],
+        ["publication_date", "date", false],
+        ["evidence_tier", "string", true]
+      ]
+    },
+    "treatment_arm": {
+      "primary_key": ["treatment_arm_id"],
+      "foreign_keys": {"study_id": "study.study_id"},
+      "fields": [
+        ["treatment_arm_id", "string", true],
+        ["study_id", "string", true],
+        ["arm_name", "string", true],
+        ["treatment_type", "string", true],
+        ["n_patients", "integer", true],
+        ["dosing_description", "string", false]
+      ]
+    },
+    "patient_population": {
+      "primary_key": ["population_id"],
+      "foreign_keys": {"study_id": "study.study_id"},
+      "fields": [
+        ["population_id", "string", true],
+        ["study_id", "string", true],
+        ["population_name", "string", true],
+        ["population_description", "string", true],
+        ["n_patients", "integer", true],
+        ["biomarker_status", "string", false],
+        ["prior_therapy_status", "string", false]
+      ]
+    },
+    "efficacy_endpoint": {
+      "primary_key": ["endpoint_id"],
+      "foreign_keys": {
+        "study_id": "study.study_id",
+        "treatment_arm_id": "treatment_arm.treatment_arm_id",
+        "population_id": "patient_population.population_id",
+        "source_document_id": "scientific_document.document_id"
+      },
+      "fields": [
+        ["endpoint_id", "string", true],
+        ["study_id", "string", true],
+        ["treatment_arm_id", "string", true],
+        ["population_id", "string", true],
+        ["endpoint_name", "string", true],
+        ["endpoint_type", "string", true],
+        ["timepoint", "string", true],
+        ["result_value", "number", true],
+        ["result_unit", "string", true],
+        ["comparator_value", "number", false],
+        ["delta_vs_comparator", "number", false],
+        ["p_value", "number", false],
+        ["confidence_interval", "string", false],
+        ["source_document_id", "string", true]
+      ]
+    },
+    "safety_event": {
+      "primary_key": ["safety_event_id"],
+      "foreign_keys": {
+        "study_id": "study.study_id",
+        "treatment_arm_id": "treatment_arm.treatment_arm_id",
+        "source_document_id": "scientific_document.document_id"
+      },
+      "fields": [
+        ["safety_event_id", "string", true],
+        ["study_id", "string", true],
+        ["treatment_arm_id", "string", true],
+        ["event_category", "string", true],
+        ["event_term", "string", true],
+        ["event_rate", "number", true],
+        ["serious_event_flag", "boolean", true],
+        ["source_document_id", "string", true]
+      ]
+    }
+  }
+}
