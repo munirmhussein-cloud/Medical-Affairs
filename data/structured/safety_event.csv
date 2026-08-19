@@ -1,0 +1,22 @@
+safety_event_id,study_id,treatment_arm_id,event_category,event_term,event_rate,serious_event_flag,source_document_id
+SE-301-001,ST-301,ARM-301-A,COMMON_AE,Upper respiratory infection,11.0,false,DOC-ST301-CSR
+SE-301-002,ST-301,ARM-301-P,COMMON_AE,Upper respiratory infection,8.0,false,DOC-ST301-CSR
+SE-301-003,ST-301,ARM-301-A,COMMON_AE,Headache,9.0,false,DOC-ST301-CSR
+SE-301-004,ST-301,ARM-301-P,COMMON_AE,Headache,8.0,false,DOC-ST301-CSR
+SE-301-005,ST-301,ARM-301-A,SERIOUS_AE,Serious adverse event any cause,3.0,true,DOC-ST301-CSR
+SE-301-006,ST-301,ARM-301-P,SERIOUS_AE,Serious adverse event any cause,3.7,true,DOC-ST301-CSR
+SE-302-001,ST-302,ARM-302-A,COMMON_AE,Upper respiratory infection,10.0,false,DOC-ST302-CSR
+SE-302-002,ST-302,ARM-302-P,COMMON_AE,Upper respiratory infection,7.0,false,DOC-ST302-CSR
+SE-302-003,ST-302,ARM-302-A,COMMON_AE,Injection-site reaction,6.0,false,DOC-ST302-CSR
+SE-302-004,ST-302,ARM-302-P,COMMON_AE,Injection-site reaction,2.0,false,DOC-ST302-CSR
+SE-302-005,ST-302,ARM-302-A,SERIOUS_AE,Serious adverse event any cause,2.8,true,DOC-ST302-CSR
+SE-302-006,ST-302,ARM-302-P,SERIOUS_AE,Serious adverse event any cause,3.1,true,DOC-ST302-CSR
+SE-303-001,ST-303,ARM-303-A,COMMON_AE,Upper respiratory infection,13.0,false,DOC-ST303-CSR
+SE-303-002,ST-303,ARM-303-P,COMMON_AE,Upper respiratory infection,9.0,false,DOC-ST303-CSR
+SE-303-003,ST-303,ARM-303-A,TREATMENT_DISCONTINUATION,Discontinuation due to adverse event,4.0,false,DOC-ST303-CSR
+SE-303-004,ST-303,ARM-303-P,TREATMENT_DISCONTINUATION,Discontinuation due to adverse event,7.0,false,DOC-ST303-CSR
+SE-303-005,ST-303,ARM-303-A,SERIOUS_AE,Serious adverse event any cause,4.2,true,DOC-ST303-CSR
+SE-303-006,ST-303,ARM-303-P,SERIOUS_AE,Serious adverse event any cause,5.0,true,DOC-ST303-CSR
+SE-210-001,ST-210,ARM-210-H,COMMON_AE,Headache,12.0,false,DOC-ST210-CSR
+SE-210-002,ST-210,ARM-210-L,COMMON_AE,Headache,9.0,false,DOC-ST210-CSR
+SE-210-003,ST-210,ARM-210-P,COMMON_AE,Headache,7.0,false,DOC-ST210-CSR
