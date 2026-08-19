@@ -5,8 +5,8 @@
 | 1 | Repository Scaffold | COMPLETE | Root project contract, secret handling, build docs established | Scaffold landed together with Round 2 because repo `main` initially contained only `.gitkeep` |
 | 2 | Synthetic Data Model | COMPLETE | Canonical entity model, machine-readable schemas, referential rules, demo evidence requirements documented | Structured data contract established |
 | 3 | Structured Synthetic Data | COMPLETE | 8 CSV datasets created; enrollment, subgroup, efficacy delta, evidence-boundary, and source-document checks documented | Deliberate Phase III, subgroup, maintenance, dose-response, safety, and no-evidence patterns staged for Cortex Analyst |
-| 4 | Scientific Document Corpus | COMPLETE | Approved/draft document corpus, manifest, citation index, approved-response index, and cross-modal consistency checks created | Cortex Search corpus now matches Round 3 structured evidence and includes governance test content |
-| 5 | Snowflake Bootstrap | NOT STARTED | | |
+| 4 | Scientific Document Corpus | COMPLETE | Approved/draft document corpus, manifest, citation index, approved-response index, and cross-modal consistency checks created | Cortex Search corpus matches Round 3 structured evidence and includes governance test content |
+| 5 | Snowflake Bootstrap | COMPLETE | Role/warehouse/database/schema/file-format/stage/grant SQL plus read-only validation script created | SQL is staged in repo; execution against target Snowflake account remains an environment step |
 | 6 | Git Integration | NOT STARTED | | |
 | 7 | Data Loading | NOT STARTED | | |
 | 8 | Semantic Layer | NOT STARTED | | |
@@ -18,4 +18,4 @@
 
 ## Current handoff
 
-Proceed to **Round 5 — Snowflake Bootstrap**. The repository now has both modalities required for the eventual demo: structured clinical evidence for Cortex Analyst and a governed unstructured corpus for Cortex Search. Round 5 should create Snowflake-native bootstrap SQL for role, warehouse, database, schema, stages/file formats as needed, and grants using the reserved object names in `docs/SNOWFLAKE_OBJECTS.md`. It should not yet create the semantic view, Cortex Search service, or Cortex Agent; those remain later rounds.
+Proceed to **Round 6 — Git Integration**. Round 5 now provides deterministic Snowflake bootstrap SQL under `snowflake/setup/` for the custom role, X-Small auto-suspending warehouse, demo database/schema, CSV and JSON file formats, three internal stages, and least-privilege grants. Round 6 should define the Snowflake Git API integration and `GIT REPOSITORY` object for this public GitHub repository, plus fetch/validation commands, without loading data into native tables yet.
