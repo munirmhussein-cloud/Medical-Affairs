@@ -1,0 +1,12 @@
+treatment_arm_id,study_id,arm_name,treatment_type,n_patients,dosing_description
+ARM-301-A,ST-301,Aurelimab 200 mg,ACTIVE,300,"Synthetic induction regimen every 4 weeks"
+ARM-301-P,ST-301,Placebo,PLACEBO,300,"Matched placebo"
+ARM-302-A,ST-302,Aurelimab 200 mg,ACTIVE,360,"Synthetic induction regimen every 4 weeks"
+ARM-302-P,ST-302,Placebo,PLACEBO,360,"Matched placebo"
+ARM-303-A,ST-303,Aurelimab 200 mg,ACTIVE,240,"Synthetic maintenance regimen every 8 weeks"
+ARM-303-P,ST-303,Placebo,PLACEBO,240,"Matched placebo"
+ARM-210-L,ST-210,Aurelimab 100 mg,ACTIVE,80,"Synthetic low-dose regimen"
+ARM-210-H,ST-210,Aurelimab 200 mg,ACTIVE,80,"Synthetic high-dose regimen"
+ARM-210-P,ST-210,Placebo,PLACEBO,80,"Matched placebo"
+ARM-220-A,ST-220,Neravilimab,ACTIVE,150,"Synthetic oral once-daily regimen"
+ARM-220-P,ST-220,Placebo,PLACEBO,150,"Matched placebo"
